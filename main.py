@@ -22,11 +22,14 @@ def init_parameters(input_size, hidden_size, output_size):
   :return {W1:<val>, b1:<val>, W2:<val>, b2:<val>}
   """
 
-  W1 = np.random.randn(input_size, hidden_size) * 0.01
-  b1 = np.zeros((1,hidden_size))
+  try:
+    W1 = np.random.randn(input_size, hidden_size) * 0.01
+    b1 = np.zeros((1,hidden_size))
 
-  W2 = np.random.randn(hidden_size, output_size) * 0.01
-  b2 = np.zeros((1, output_size))
+    W2 = np.random.randn(hidden_size, output_size) * 0.01
+    b2 = np.zeros((1, output_size))
+  except RuntimeError as err:
+    print(f"Initilization Error: {err}")
 
   return {'W1' : W1, 'b1' : b1, 'W2' : W2, 'b2' : b2}
   
@@ -63,13 +66,53 @@ def softmax(Z):
   # Math: exp(x - C) / sum(exp(x - C)) gives the exact same result as exp(x) / sum(exp(x)).
   # axis=1 means "find max across the 10 classes for each image".
   # keepdims=True ensures the shape stays (m, 1) for broadcasting.
-  Z_Shifted = Z - np.max(Z, axis=1, keepdims=True)
-  
-  exp_Z = np.exp(Z_Shifted)
-  
-  #Normalize
-  # axis=1 sums across the columns 
-  A = exp_Z/np.sum(exp_Z, axis=1, keepdims=True)
-  
+  try:
+    Z_Shifted = Z - np.max(Z, axis=1, keepdims=True)
+    
+    exp_Z = np.exp(Z_Shifted)
+    
+    #Normalize
+    # axis=1 sums across the columns 
+    A = exp_Z/np.sum(exp_Z, axis=1, keepdims=True)
+  except RuntimeError as err:
+    print(f"Softmax Runtime error : {err}")
+    
   return A
+  
+# TODO : Add forward propogation function
+def forward_propogation(X, parameters):
+  """
+    Argument:
+    X -- Input data of shape (m, input_size)
+    parameters -- python dictionary containing your parameters "W1", "b1", "W2", "b2"
+    
+    Returns:
+    A2 -- The output of the second activation (probabilities)
+    cache -- a dictionary containing "Z1", "A1", "Z2", "A2"
+             (We need these stored for the backward pass!)
+  """
+  try:
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    
+    # First layer
+    # Linear step
+    Z1 = np.dot(X, W1) + b1
+    
+    A1 = relu(Z1) # Actual activation
+    
+    # Hidden layer
+    # Linear step
+    Z2 = np.dot(A1, W2) + b2
+    
+    A2 = softmax(Z2) # Final activation function to predict the actual numbers
+    
+    # store everything in a dictionary (Cache)
+    cache = { "Z1": Z1, "A1": A1, "Z2": Z2, "A2":A2 }  
+  except RuntimeError as err:
+    print(f"forward propogation error : {err}")
+  return A2, cache
+ 
   
