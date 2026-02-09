@@ -111,8 +111,32 @@ def forward_propogation(X, parameters):
     
     # store everything in a dictionary (Cache)
     cache = { "Z1": Z1, "A1": A1, "Z2": Z2, "A2":A2 }  
+    print(cache)
   except RuntimeError as err:
     print(f"forward propogation error : {err}")
   return A2, cache
  
+  
+def categorical_cross_entropy(A2, Y_true, ):
+  """
+   Computes the Categorical Cross-Entropy Loss.
+
+     Role:
+     This measures how well the model's probability distribution (A2)
+     matches the true distribution (Y). It penalizes the model more
+     heavily when it is "confident and wrong."
+
+     Args:
+         A2 (numpy.ndarray): The output of the softmax activation (probabilities).
+                            Shape: (m_examples, 10)
+         Y (numpy.ndarray): The ground truth labels (integers 0-9).
+                           Shape: (Y_raw,)
+
+     Returns:
+         loss (float): The average cross-entropy loss across all m_examples.
+
+     Formula: -(1/m) * sum(Y_one_hot * log(A2 + epsilon))
+  
+  """
+  pass
   
