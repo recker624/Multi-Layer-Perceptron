@@ -138,5 +138,16 @@ def categorical_cross_entropy(A2, Y_true, ):
      Formula: -(1/m) * sum(Y_one_hot * log(A2 + epsilon))
   
   """
-  pass
-  
+  try:
+    # One hot encode the true labels
+    encoded_arr = np.zeros((Y_true.size, 10), dtype=int)
+    encoded_arr[np.arange(Y_true.size), Y_true] = 1
+    
+    loss_matrix = encoded_arr * np.log(A2 + 1e-8)
+    average_loss = -(1/Y_true.size) * np.sum(loss_matrix)
+    
+    return average_loss
+    
+  except Exception as e:
+    print(f"Exception in categorical_cross_entropy: {e}")
+    
