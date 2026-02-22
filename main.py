@@ -217,3 +217,15 @@ def backward_propagation(input_data, true_labels, cache, parameters):
     delta_linear_hidden = error_hidden_layer * relu_derivative(linear_output_hidden)
     
     
+    gradient_weights_input_hidden = (1/m) * np.dot(input_data.T, delta_linear_hidden)
+    
+    gradient_biases_input_hidden = (1/m) * np.sum(delta_linear_hidden, axis=0, keepdims=True)
+    
+    grads = {
+        "gradient_weights_input_hidden": gradient_weights_input_hidden,
+        "gradient_biases_input_hidden": gradient_biases_input_hidden,
+        "gradient_weights_hidden_output": gradient_weights_hidden_output,
+        "gradient_biases_hidden_output": gradient_biases_hidden_output
+    }
+    
+    return grads
